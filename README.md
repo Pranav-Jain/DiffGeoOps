@@ -1,0 +1,1 @@
+# Curvatures-of-Triangulated-2-Manifolds
