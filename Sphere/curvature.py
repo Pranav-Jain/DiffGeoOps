@@ -55,10 +55,9 @@ def get_vector(x,y): # returns vector from x to y
 
 def get_tan_angle(x,y): # return tan of angle between vectors x and y
 	cos = np.dot(x.T,y)/(np.linalg.norm(x,2)*np.linalg.norm(y,2))
+	if cos==0:
+		return(np.inf)
 	tan = ((1-cos*cos)**0.5/(cos))
-	# if tan<0:
-	# 	# print('obtuse')
-	# 	return(-1)
 	return tan
 
 def get_neighbors(index,triangles): # get 1 ring neighborhood for ith vertex
@@ -221,16 +220,21 @@ if __name__ == '__main__':
 	vertices = np.loadtxt("2wcV.txt", dtype=float)
 	triangles = np.loadtxt("2wcT.txt", dtype=int)-1
 
-	# f = open('./Cylindroid/cylindroid.off','r')
+	# f = open('torus.off','r')
 	# vertices, triangles = read_off(f)
 	# vertices = np.array(vertices)
 	# triangles = np.array(triangles)
 	# print(vertices.shape)
 
-	arr_K_H = np.zeros(triangles.shape[0])
-	arr_K_G = np.zeros(triangles.shape[0])
-	arr_K1 = np.zeros(triangles.shape[0])
-	arr_K2 = np.zeros(triangles.shape[0])
+	# arr_K_H = np.zeros(triangles.shape[0])
+	# arr_K_G = np.zeros(triangles.shape[0])
+	# arr_K1 = np.zeros(triangles.shape[0])
+	# arr_K2 = np.zeros(triangles.shape[0])
+
+	arr_K_G = []
+	arr_K_H = []
+	arr_K1 = []
+	arr_K2 = []
 	
 	for i in range(len(vertices)):
 		print('\nVertex: ' + str(i))
@@ -238,6 +242,10 @@ if __name__ == '__main__':
 		a_mixed = A_mixed(i,vertices[i],vertices,triangles)
 		if a_mixed=='#' or a_mixed==0:
 			print('#')
+			arr_K_G.append(0.)
+			arr_K_H.append(0.)
+			arr_K1.append(0.)
+			arr_K2.append(0.)
 			continue
 
 		K = mean_normal_curvature(i,vertices[i],a_mixed,vertices,triangles)
@@ -254,20 +262,11 @@ if __name__ == '__main__':
 
 ############################## Needed for Plotting ##################################################
 
-		neighbors = get_neighbors(i,triangles)
-		for j,neighbor in enumerate(neighbors):
-			for k in range(triangles.shape[0]):
-				if len(different_elements(triangles[k],neighbor))==0.0:
-					arr_K_G[k]+=K_G
-					arr_K_H[k]+=K_H
-					arr_K1[k]+=K1
-					arr_K2[k]+=K2
-					break
+		arr_K_G.append(K_G)
+		arr_K_H.append(K_H)
+		arr_K1.append(K1)
+		arr_K2.append(K2)
 
-	# K_G = np.exp(K_G)
-	# K_H = np.exp(K_H)
-	# K1 = np.exp(K1)
-	# K2 = np.exp(K2)
 
 	np.save('K_H',arr_K_H)
 	np.save('K_G',arr_K_G)
