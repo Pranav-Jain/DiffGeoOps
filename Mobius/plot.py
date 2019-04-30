@@ -1,16 +1,9 @@
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
-from matplotlib import cm
-import numpy as np
-import pandas as pd
-from sys import argv
-import itertools
 from mayavi import mlab 
 
 arr_K_H = np.load('K_H.npy')
 arr_K_G = np.load('K_G.npy')
-arr_K1 = np.load('K2.npy')
+arr_K1 = np.load('K1.npy')
 arr_K2 = np.load('K2.npy')
 vertices = np.load('vertices.npy')
 triangles = np.load('triangles.npy')
