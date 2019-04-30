@@ -1,6 +1,7 @@
 # Curvatures-of-Triangulated-2-Manifolds
 
 This project implements the following paper
+
 http://www.geometry.caltech.edu/pubs/DMSB_III.pdf
 
 Every folder in the project mainly consists of:
@@ -13,6 +14,6 @@ The file __curvature.py__ implements the algorithm mentioned in the paper and st
 The file __plot.py__ shows the plots of the meshes with color scheme according to the value of curvatures. 
 In order to plot, go to the directory of the mesh and just run the file plot.py.
 
-The following are the libraries used
+The following libraries are used
 * numpy
 * mayavi (for plotting)
