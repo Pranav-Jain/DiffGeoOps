@@ -20,6 +20,7 @@ mesh2 = mlab.pipeline.set_active_attribute(mesh,
                 point_scalars='Point data') 
 s2 = mlab.pipeline.surface(mesh2)
 s2.actor.mapper.interpolate_scalars_before_mapping = True
+mlab.colorbar(s2,title='Curvature', orientation='vertical')
 
 mlab.savefig(filename='K_G.png')
 mlab.show()
@@ -35,6 +36,7 @@ mesh2 = mlab.pipeline.set_active_attribute(mesh,
                 point_scalars='Point data') 
 s2 = mlab.pipeline.surface(mesh2) 
 s2.actor.mapper.interpolate_scalars_before_mapping = True
+mlab.colorbar(s2,title='Curvature', orientation='vertical')
 
 mlab.savefig(filename='K_H.png')
 mlab.show()
@@ -50,6 +52,7 @@ mesh2 = mlab.pipeline.set_active_attribute(mesh,
                 point_scalars='Point data') 
 s2 = mlab.pipeline.surface(mesh2)
 s2.actor.mapper.interpolate_scalars_before_mapping = True
+mlab.colorbar(s2,title='Curvature', orientation='vertical')
 
 mlab.savefig(filename='K1.png')
 mlab.show()
@@ -65,6 +68,7 @@ mesh2 = mlab.pipeline.set_active_attribute(mesh,
                 point_scalars='Point data') 
 s2 = mlab.pipeline.surface(mesh2)
 s2.actor.mapper.interpolate_scalars_before_mapping = True
+mlab.colorbar(s2,title='Curvature', orientation='vertical')
 
 mlab.savefig(filename='K2.png')
 mlab.show()

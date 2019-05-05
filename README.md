@@ -9,7 +9,7 @@ Every folder in the project mainly consists of:
 * File curvature.py
 * File plot.py
 
-The file __curvature.py__ implements the algorithm mentioned in the paper and storees the curvature values at each vertex of the triangular mesh as a numpy array.
+The file __curvature.py__ implements the algorithm mentioned in the paper and stores the curvature values at each vertex of the triangular mesh as a numpy array.
 
 The file __plot.py__ shows the plots of the meshes with color scheme according to the value of curvatures. 
 In order to plot, go to the directory of the mesh and just run the file plot.py.

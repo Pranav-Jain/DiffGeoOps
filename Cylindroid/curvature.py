@@ -1,5 +1,4 @@
 import numpy as np
-import itertools
 
 def read_off(file):
     if 'OFF' != file.readline().strip():
@@ -24,28 +23,28 @@ def get_area(a,b,c): # area of triangle using heron's formula
 
 def check_obtuse(triangle,vertices,index): # checks if triangle is obtuse
 	flag=0
-
 	x = vertices[index]
 	ind_arr = []
 	ind_arr.append(index)
-	arr = different_elements(triangle,ind_arr)
+	
+	arr = different_elements(tuple(triangle),tuple(ind_arr))
 	y = vertices[int(arr[0])]
 	z = vertices[int(arr[1])]
 
 	v1 = get_vector(x,y)
 	v2 = get_vector(x,z)
-	tan = get_tan_angle(v1,v2)
-	if tan<0:
+	angle = get_angle(v1,v2)
+	if angle>np.pi/2.:
 		flag=1
 	v1 = get_vector(y,z)
 	v2 = get_vector(y,x)
-	tan = get_tan_angle(v1,v2)
-	if tan<0:
+	angle = get_angle(v1,v2)
+	if angle>np.pi/2.:
 		flag=2
 	v1 = get_vector(z,x)
 	v2 = get_vector(z,y)
-	tan = get_tan_angle(v1,v2)
-	if tan<0:
+	angle = get_angle(v1,v2)
+	if angle>np.pi/2.:
 		flag=2
 
 	return flag
@@ -53,12 +52,12 @@ def check_obtuse(triangle,vertices,index): # checks if triangle is obtuse
 def get_vector(x,y): # returns vector from x to y
 	return y-x
 
-def get_tan_angle(x,y): # return tan of angle between vectors x and y
-	cos = np.dot(x.T,y)/(np.linalg.norm(x,2)*np.linalg.norm(y,2))
-	if cos==0:
-		return(np.inf)
-	tan = ((1-cos*cos)**0.5/(cos))
-	return tan
+def get_angle(x,y): # return tan of angle between vectors x and y
+	x = x/np.linalg.norm(x,2)
+	y = y/np.linalg.norm(y,2)
+	cos = np.dot(x,y)
+	
+	return np.arccos(cos)
 
 def get_neighbors(index,triangles): # get 1 ring neighborhood for ith vertex
 	ring_neighbors = []
@@ -66,10 +65,7 @@ def get_neighbors(index,triangles): # get 1 ring neighborhood for ith vertex
 		if index in tri:
 			ring_neighbors.append(tri)
 
-	# print(ring_neighbors)
-
-	neighbors_in_order = get_common_edges(index,ring_neighbors)
-	return np.array(neighbors_in_order)
+	return np.array(ring_neighbors)
 
 def common_elements(list1, list2): # get common elements of list1 and list2
 	return list(set(list1) & set(list2))
@@ -77,70 +73,41 @@ def common_elements(list1, list2): # get common elements of list1 and list2
 def different_elements(list1, list2): # get uncommon elements of list1 and list2
 	return list(set(list1) ^ set(list2))
 
-def get_common_edges(index,neighbors): #get triangles with common edges
+def A_mixed(i,vertex,neighbors,vertices,triangles):
 
-	permutations = itertools.permutations(neighbors,len(neighbors))
-
-	for matrix in permutations:
-		flag = 0
-		for i in range(len(matrix)):
-			common = common_elements(matrix[i],matrix[(i+1)%len(matrix)])
-
-			if len(common)!=2:
-				flag=1
-				break
-
-		if flag==0:
-			M = np.array(matrix)
-			return(M)
-
-def A_mixed(i,vertex,vertices,triangles):
-
-	# print(vertex)
 	A_mixed = 0
-	neighbors = get_neighbors(i,triangles)
-	# print('jkbckja',neighbors)
-	# print(neighbors.type())
+
 	if neighbors.dtype==object:
 		return '#'
 
 	summation = 0
 	for j in range(neighbors.shape[0]):
-		triangle1 = neighbors[j]
-		triangle2 = neighbors[(j+1)%neighbors.shape[0]]
+		triangle = neighbors[j]
 
-		flag1 = check_obtuse(triangle1,vertices,i)
-		flag2 = check_obtuse(triangle2,vertices,i)
-
-		# print(flag1)
+		flag1 = check_obtuse(triangle,vertices,i)
 
 		if flag1==0: # not obtuse
 		
-			common_vertices = common_elements(triangle1, triangle2)
-			arr = np.delete(common_vertices,np.where(common_vertices==np.float64(i)))
-			# print(arr)
+			arr = np.delete(triangle,np.where(triangle==np.float64(i)))
 			
 			x1 = vertex
 			x2 = vertices[int(arr[0])]
+			x3 = vertices[int(arr[1])]
 
-			a = vertices[int(different_elements(triangle1, common_vertices)[0])]
-			b = vertices[int(different_elements(triangle2, common_vertices)[0])]
+			v1 = get_vector(x1,x2)
+			v2 = get_vector(x1,x3)
+			v3 = get_vector(x2,x3)
+			cot_alpha = 1.0/np.tan(get_angle(-v1,v3))
 
-			v1 = get_vector(a,x1)
-			v2 = get_vector(a,x2)
-			cot_alpha = 1.0/get_tan_angle(v1,v2)
+			cot_beta = 1.0/np.tan(get_angle(-v2,-v3))
 
-			v1 = get_vector(b,x1)
-			v2 = get_vector(b,x2)
-			cot_beta = 1.0/get_tan_angle(v1,v2)
-
-			summation += ((cot_alpha + cot_beta) * (np.linalg.norm(x1-x2)**2))/8.0
+			summation += (cot_alpha*np.linalg.norm(v2,2)**2 + cot_beta*np.linalg.norm(v1,2)**2)/8.0
 
 		elif flag1==1:
-			area = get_area(vertices[triangle1[0]],vertices[triangle1[1]],vertices[triangle1[2]])
+			area = get_area(vertices[triangle[0]],vertices[triangle[1]],vertices[triangle[2]])
 			summation += area/2.0
 		else:
-			area = get_area(vertices[triangle1[0]],vertices[triangle1[1]],vertices[triangle1[2]])
+			area = get_area(vertices[triangle[0]],vertices[triangle[1]],vertices[triangle[2]])
 			summation += area/4.0
 
 	A_mixed += summation
@@ -148,38 +115,30 @@ def A_mixed(i,vertex,vertices,triangles):
 	print('A_mixed', A_mixed)
 	return A_mixed
 
-def mean_normal_curvature(i,vertex,A_mixed,vertices,triangles):
-	neighbors = get_neighbors(i,triangles)
+def mean_normal_curvature(i,vertex,A_mixed,neighbors,vertices,triangles):
 	summation = np.array([0.,0.,0.])
 
 	for j in range(neighbors.shape[0]):
-		triangle1 = neighbors[j]
-		triangle2 = neighbors[(j+1)%neighbors.shape[0]]
+		triangle = neighbors[j]
 		
-		common_vertices = common_elements(triangle1, triangle2)
-		arr = np.delete(common_vertices,np.where(common_vertices==np.float64(i)))
+		arr = np.delete(triangle,np.where(triangle==np.float64(i)))
 		
 		x1 = vertex
 		x2 = vertices[int(arr[0])]
+		x3 = vertices[int(arr[1])]
 
-		a = vertices[int(different_elements(triangle1, common_vertices)[0])]
-		b = vertices[int(different_elements(triangle2, common_vertices)[0])]
+		v1 = get_vector(x1,x2)
+		v2 = get_vector(x1,x3)
+		v3 = get_vector(x2,x3)
+		cot_alpha = 1.0/np.tan(get_angle(-v1,v3))
+		cot_beta = 1.0/np.tan(get_angle(-v2,-v3))
 
-		v1 = get_vector(a,x1)
-		v2 = get_vector(a,x2)
-		cot_alpha = 1.0/get_tan_angle(v1,v2)
-
-		v1 = get_vector(b,x1)
-		v2 = get_vector(b,x2)
-		cot_beta = 1.0/get_tan_angle(v1,v2)
-
-		summation += (cot_alpha + cot_beta) * (x1-x2)
+		summation += (cot_alpha*v2 + cot_beta*v1)
 
 	K = summation/(2.0*A_mixed)
 	return K
 
-def gaussian_curvature(i,vertex,A_mixed,vertices,triangles):
-	neighbors = get_neighbors(i,triangles)
+def gaussian_curvature(i,vertex,A_mixed,neighbors,vertices,triangles):
 
 	summation = 0.
 	for j in range(neighbors.shape[0]):
@@ -188,16 +147,16 @@ def gaussian_curvature(i,vertex,A_mixed,vertices,triangles):
 
 		a = vertices[int(arr[0])]
 		b = vertices[int(arr[1])]
-		c = vertices[int(i)]
+		c = vertex
 
 		v1 = get_vector(c,a)
 		v2 = get_vector(c,b)
-		theta = np.arctan(get_tan_angle(v1,v2))
 
-		# print(theta)
+		theta = get_angle(v2,v1)
+
 		summation += theta
 
-	K_G = (2.*np.pi - summation)/(A_mixed)
+	K_G = ((2.0*np.pi) - summation)/(A_mixed)
 	return K_G
 
 def mean_curvature(K):
@@ -206,7 +165,7 @@ def mean_curvature(K):
 
 def principal_curvature(K_H,K_G):
 	delta = K_H*K_H - K_G
-	# print(delta)
+	
 	if delta<0:
 		delta=0
 
@@ -217,19 +176,10 @@ def principal_curvature(K_H,K_G):
 
 if __name__ == '__main__':
 
-	# vertices = np.loadtxt("vertices_torus.txt", dtype=float)
-	# triangles = np.loadtxt("triangles_torus.txt", dtype=int)
-
 	f = open('cylindroid.off','r')
 	vertices, triangles = read_off(f)
 	vertices = np.array(vertices)
 	triangles = np.array(triangles)
-	print(vertices.shape)
-
-	# arr_K_H = np.zeros(triangles.shape[0])
-	# arr_K_G = np.zeros(triangles.shape[0])
-	# arr_K1 = np.zeros(triangles.shape[0])
-	# arr_K2 = np.zeros(triangles.shape[0])
 
 	arr_K_G = []
 	arr_K_H = []
@@ -239,7 +189,9 @@ if __name__ == '__main__':
 	for i in range(len(vertices)):
 		print('\nVertex: ' + str(i))
 
-		a_mixed = A_mixed(i,vertices[i],vertices,triangles)
+		neighbors = get_neighbors(np.copy(i),np.copy(triangles))
+		
+		a_mixed = A_mixed(i,vertices[i],np.copy(neighbors),np.copy(vertices),np.copy(triangles))
 		if a_mixed=='#' or a_mixed==0:
 			print('#')
 			arr_K_G.append(0.)
@@ -248,9 +200,9 @@ if __name__ == '__main__':
 			arr_K2.append(0.)
 			continue
 
-		K = mean_normal_curvature(i,vertices[i],a_mixed,vertices,triangles)
+		K_G = gaussian_curvature(np.copy(i),np.copy(vertices[i]),np.copy(a_mixed),np.copy(neighbors),np.copy(vertices),np.copy(triangles)) 
+		K = mean_normal_curvature(np.copy(i),np.copy(vertices[i]),np.copy(a_mixed),np.copy(neighbors),np.copy(vertices),np.copy(triangles))
 		K_H = mean_curvature(K)
-		K_G = gaussian_curvature(i,vertices[i],a_mixed,vertices,triangles)
 
 		K1, K2 = principal_curvature(K_H,K_G)
 
@@ -266,6 +218,7 @@ if __name__ == '__main__':
 		arr_K_H.append(K_H)
 		arr_K1.append(K1)
 		arr_K2.append(K2)
+
 
 	np.save('K_H',arr_K_H)
 	np.save('K_G',arr_K_G)
