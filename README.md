@@ -2,7 +2,7 @@
 
 This project implements the following paper
 
-http://www.geometry.caltech.edu/pubs/DMSB_III.pdf
+> http://www.geometry.caltech.edu/pubs/DMSB_III.pdf
 
 Every folder in the project mainly consists of:
 * The _off_ files for the meshes.
@@ -17,3 +17,16 @@ In order to plot, go to the directory of the mesh and just run the file plot.py.
 The following libraries are used
 * numpy
 * mayavi (for plotting)
+
+## License 
+
+Copyright (c) 2019 Pranav Jain
+
+For license information, see [LICENSE](LICENSE) or http://mit-license.org
+
+
+- - -
+
+This code was written as a part of my independent study in **Differential Geometry** with [Dr. Kaushik Kalyanaraman](https://www.iiitd.ac.in/kaushik) at IIIT Delhi during Winter 2019 Semester. 
+
+For bugs in the code, please write to: pranav16255 [at] iiitd [dot] ac [dot] in
