@@ -2,7 +2,7 @@
 
 This project implements the following paper
 
-> http://www.geometry.caltech.edu/pubs/DMSB_III.pdf
+> http://multires.caltech.edu/pubs/diffGeoOps.pdf
 
 Every folder in the project mainly consists of:
 * The _off_ files for the meshes.
