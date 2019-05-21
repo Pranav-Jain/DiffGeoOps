@@ -1,4 +1,4 @@
-# Curvatures-of-Triangulated-2-Manifolds
+# diffGeoOps
 
 This project implements the following paper
 
