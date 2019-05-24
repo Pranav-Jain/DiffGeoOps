@@ -24,9 +24,6 @@ Copyright (c) 2019 Pranav Jain
 
 For license information, see [LICENSE](LICENSE) or http://mit-license.org
 
-
 - - -
-
-This code was written as a part of my independent study in **Differential Geometry** with [Dr. Kaushik Kalyanaraman](https://www.iiitd.ac.in/kaushik) at IIIT Delhi during Winter 2019 Semester. 
 
 For bugs in the code, please write to: pranav16255 [at] iiitd [dot] ac [dot] in
