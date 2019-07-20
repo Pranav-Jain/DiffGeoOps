@@ -1,4 +1,4 @@
-# diffGeoOps
+# DiffGeoOps
 
 This project implements the following paper
 
