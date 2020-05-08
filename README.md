@@ -1,22 +1,49 @@
 # DiffGeoOps
 
-This project implements the following paper
+The project aims to find the principal, mean and gaussian curvatures on triangular meshes using the famous cotangent formula. The implementation is motivated from the following paper.
 
 > http://multires.caltech.edu/pubs/diffGeoOps.pdf
 
-Every folder in the project mainly consists of:
-* The _off_ files for the meshes.
-* File curvature.py
-* File plot.py
-
-The file __curvature.py__ implements the algorithm mentioned in the paper and stores the curvature values at each vertex of the triangular mesh as a numpy array.
-
-The file __plot.py__ shows the plots of the meshes with color scheme according to the value of curvatures. 
-In order to plot, go to the directory of the mesh and just run the file plot.py.
-
-The following libraries are used
+## Requirements
+The code uses the following libraries
 * numpy
+* csv
 * mayavi (for plotting)
+
+Make sure to install them before running the code.
+
+> Caution: Currently, the code supports meshes in ``.txt`` and ``.off`` format only.
+
+## Usage
+The file **curvature.py** finds all the curvatures (principal, mean and gaussian) given a triangular mesh and stores the curvature values at each vertex of the triangular mesh in a csv file named __output.csv__.
+
+If the mesh is in ``.off`` format, run
+```sh
+$ python curvature.py <path to off file>
+```
+If the mesh is in ``.txt`` format, run
+```sh
+$ python curvature.py <path to vertices.txt file> <path to triangles.txt file>
+```
+> Caution: The first argument is the file containing vertices and the second argument is the file contatining triangles.
+
+## Plotting
+The file **plot.py** shows the plots of the meshes with color scheme according to the value of curvatures. The file **plot.py** reads from the __output.csv__ created by **curvature.py**. Make sure that the csv file is the same directory as **plot.py**.
+
+If the mesh is in ``.off`` format, run
+```sh
+$ python plot.py <path to off file>
+```
+If the mesh is in ``.txt`` format, run
+```sh
+$ python plot.py <path to vertices.txt file> <path to triangles.txt file>
+```
+> Caution: The first argument is the file containing vertices and the second argument is the file contatining triangles.
+
+## Outputs
+The Gaussian Curvature plots of some of the meshes is shown below.
+![Gaussian Curvature on Sphere](Sphere/Gaussian.png)
+![Gaussian Curvature on Torus](Torus/Gaussian.png)
 
 ## License 
 
